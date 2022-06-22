@@ -14,6 +14,7 @@ import {
   TRACKED_TOKEN_BUSD_PAIRS,
   getOrCreateBundle,
   getOrCreateTeam,
+  getOrCreateRandomAssignTeam,
 } from "./utils";
 
 /**
@@ -42,6 +43,7 @@ export function handleSwap(event: Swap): void {
   // We load other entities as the trade is doomed valid and competition is in progress.
   let bundle = getOrCreateBundle();
   let team = getOrCreateTeam(competition.id, user.team);
+  let randomAssignTeam = getOrCreateRandomAssignTeam(competition.id, user.randomAssignTeam);
 
   let bnbIN: BigDecimal;
   let bnbOUT: BigDecimal;
@@ -115,6 +117,12 @@ export function handleSwap(event: Swap): void {
   team.volumeBNB = team.volumeBNB.plus(volumeBNB);
   team.txCount = team.txCount.plus(BI_ONE);
   team.save();
+
+  // Random assign team statistics.
+  randomAssignTeam.volumeUSD = randomAssignTeam.volumeUSD.plus(volumeUSD);
+  randomAssignTeam.volumeBNB = randomAssignTeam.volumeBNB.plus(volumeBNB);
+  randomAssignTeam.txCount = randomAssignTeam.txCount.plus(BI_ONE);
+  randomAssignTeam.save();
 
   // Competition statistics.
   competition.volumeUSD = competition.volumeUSD.plus(volumeUSD);

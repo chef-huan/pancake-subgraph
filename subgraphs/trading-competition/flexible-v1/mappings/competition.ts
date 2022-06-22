@@ -1,7 +1,11 @@
 /* eslint-disable prefer-const */
 import { Address, BigInt, ethereum, log } from "@graphprotocol/graph-ts";
 import { Pair as PairTemplate } from "../generated/templates";
-import { NewCompetitionStatus, UserRegister } from "../generated/FlexibleTradingCompV1/FlexibleTradingCompV1";
+import {
+  NewCompetitionStatus,
+  UserRandomTeamAssigned,
+  UserRegister,
+} from "../generated/FlexibleTradingCompV1/FlexibleTradingCompV1";
 import {
   BI_ONE,
   BI_TWO,
@@ -13,6 +17,8 @@ import {
   getOrCreateBundle,
   getOrCreateTeam,
   getOrCreateUser,
+  getUser,
+  getOrCreateRandomAssignTeam,
 } from "./utils";
 
 /**
@@ -42,6 +48,19 @@ export function handleUserRegister(event: UserRegister): void {
 
   // Fail safe condition in case the user has already been created.
   getOrCreateUser(competition.id, event.params.userAddress.toHex(), team.id, event.block.number);
+}
+
+export function handleUserRandomTeamAssigned(event: UserRandomTeamAssigned): void {
+  let user = getUser(event.params.competitionId.toString(), event.params.userAddress.toHex());
+  if (user !== null) {
+    let randomTeam = getOrCreateRandomAssignTeam(
+      event.params.competitionId.toString(),
+      event.params.competitionTeamId.toString()
+    );
+    user.randomAssignTeam = randomTeam.id;
+
+    user.save();
+  }
 }
 
 export function handleNewCompetitionStatus(event: NewCompetitionStatus): void {

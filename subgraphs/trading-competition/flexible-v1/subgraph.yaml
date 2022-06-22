@@ -36,6 +36,8 @@ dataSources:
           handler: handleUserRegister
         - event: NewCompetitionStatus(uint8,uint256)
           handler: handleNewCompetitionStatus
+        - event: UserRandomTeamAssigned(address,uint256,uint256)
+          handler: handleUserRandomTeamAssigned
 templates:
   - kind: ethereum/contract
     name: Pair

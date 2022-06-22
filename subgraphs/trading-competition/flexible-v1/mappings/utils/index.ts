@@ -1,7 +1,7 @@
 /* eslint-disable prefer-const */
 import { Address, BigDecimal, BigInt } from "@graphprotocol/graph-ts";
 import { Pair } from "../../generated/templates/Pair/Pair";
-import { Bundle, Competition, CompetitionInfo, Team, User } from "../../generated/schema";
+import { Bundle, Competition, CompetitionInfo, RandomAssignTeam, Team, User } from "../../generated/schema";
 
 export let BI_ZERO = BigInt.fromI32(0);
 export let BI_ONE = BigInt.fromI32(1);
@@ -80,13 +80,29 @@ export function getOrCreateTeam(competitionId: string, teamId: string): Team {
   return team as Team;
 }
 
+export function getOrCreateRandomAssignTeam(competitionId: string, teamId: string): RandomAssignTeam {
+  let team = RandomAssignTeam.load(competitionId + "-" + teamId); // Use `String` instead of `hex` to make the reconciliation simpler.
+  if (team === null) {
+    team = new RandomAssignTeam(competitionId + "-" + teamId);
+    team.volumeUSD = BD_ZERO;
+    team.volumeBNB = BD_ZERO;
+    team.txCount = BI_ZERO;
+    team.save();
+  }
+  return team as RandomAssignTeam;
+}
+
+export function getUser(competitionId: string, userAddressHex: string): User | null {
+  return User.load(competitionId + "-" + userAddressHex);
+}
+
 export function getOrCreateUser(
   competitionId: string,
   userAddressHex: string,
   teamId: string,
   blockNumber: BigInt
 ): User {
-  let user = User.load(competitionId + "-" + userAddressHex);
+  let user = getUser(competitionId, userAddressHex);
   if (user === null) {
     user = new User(competitionId + "-" + userAddressHex);
     user.competition = competitionId;

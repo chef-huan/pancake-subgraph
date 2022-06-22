@@ -48,6 +48,21 @@ type Team @entity {
     txCount: BigInt!
 }
 
+type RandomAssignTeam @entity {
+    id: ID! # address
+
+    # Users
+    userCount: BigInt!
+    users: [User!]! @derivedFrom(field: "randomAssignTeam")
+
+    # Volume
+    volumeUSD: BigDecimal!
+    volumeBNB: BigDecimal!
+
+    # Transactions count
+    txCount: BigInt!
+}
+
 type User @entity {
     id: ID! # address
 
@@ -56,6 +71,8 @@ type User @entity {
 
     # Team
     team: Team!
+    # RandomAssignTeam
+    randomAssignTeam: RandomAssignTeam
 
     # Block number
     block: BigInt!

@@ -12,6 +12,11 @@
         "type": "address"
       },
       {
+        "internalType": "address",
+        "name": "_randomGeneratorAddress",
+        "type": "address"
+      },
+      {
         "internalType": "address[]",
         "name": "_tokenAddresses",
         "type": "address[]"
@@ -29,6 +34,25 @@
     ],
     "stateMutability": "nonpayable",
     "type": "constructor"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "userAddress",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "competitionId",
+        "type": "uint256"
+      }
+    ],
+    "name": "ClaimReward",
+    "type": "event"
   },
   {
     "anonymous": false,
@@ -85,6 +109,31 @@
       }
     ],
     "name": "TeamRewardsUpdate",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "userAddress",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "competitionTeamId",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "competitionId",
+        "type": "uint256"
+      }
+    ],
+    "name": "UserRandomTeamAssigned",
     "type": "event"
   },
   {
@@ -182,6 +231,19 @@
     "type": "event"
   },
   {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "endIndex",
+        "type": "uint256"
+      }
+    ],
+    "name": "assignUsersToRandomTeams",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
     "inputs": [],
     "name": "bunnyMintingStation",
     "outputs": [
@@ -249,42 +311,6 @@
     "type": "function"
   },
   {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "_amount",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "_cursor",
-        "type": "uint256"
-      }
-    ],
-    "name": "claimMysteryBoxRemainder",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "tokenId",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "_cursor",
-        "type": "uint256"
-      }
-    ],
-    "name": "claimNFTRemainder",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
     "inputs": [],
     "name": "claimReward",
     "outputs": [],
@@ -294,13 +320,13 @@
   {
     "inputs": [
       {
-        "internalType": "uint256",
-        "name": "_amount",
-        "type": "uint256"
+        "internalType": "address",
+        "name": "_tokenAddress",
+        "type": "address"
       },
       {
         "internalType": "uint256",
-        "name": "_cursor",
+        "name": "_amount",
         "type": "uint256"
       }
     ],
@@ -324,7 +350,7 @@
   },
   {
     "inputs": [],
-    "name": "numberTeams",
+    "name": "lastUserNotAssignedIndex",
     "outputs": [
       {
         "internalType": "uint256",
@@ -336,37 +362,42 @@
     "type": "function"
   },
   {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
-      },
-      {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
-      },
+    "inputs": [],
+    "name": "minRewardGroupWithNoNFTReward",
+    "outputs": [
       {
         "internalType": "uint256",
         "name": "",
         "type": "uint256"
-      },
-      {
-        "internalType": "bytes",
-        "name": "",
-        "type": "bytes"
       }
     ],
-    "name": "onERC721Received",
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "numberCompetitionTeams",
     "outputs": [
       {
-        "internalType": "bytes4",
+        "internalType": "uint256",
         "name": "",
-        "type": "bytes4"
+        "type": "uint256"
       }
     ],
-    "stateMutability": "nonpayable",
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "numberTeams",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
     "type": "function"
   },
   {
@@ -397,6 +428,19 @@
   },
   {
     "inputs": [],
+    "name": "randomGenerator",
+    "outputs": [
+      {
+        "internalType": "contract IRandomNumberGenerator",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
     "name": "register",
     "outputs": [],
     "stateMutability": "nonpayable",
@@ -405,6 +449,39 @@
   {
     "inputs": [],
     "name": "renounceOwnership",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "requestRandomWords",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "_numberCompetitionTeams",
+        "type": "uint256"
+      }
+    ],
+    "name": "setCompetitionTeamNumber",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "_minRewardGroupWithNoNFTReward",
+        "type": "uint256"
+      }
+    ],
+    "name": "setMinRewardGroupWithNoNFTReward",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -425,12 +502,12 @@
   {
     "inputs": [
       {
-        "internalType": "address[]",
-        "name": "_NFTCollectionAddress",
-        "type": "address[]"
+        "internalType": "address",
+        "name": "_randomGeneratorAddress",
+        "type": "address"
       }
     ],
-    "name": "setNFTCollectionAddress",
+    "name": "setRandomGenerator",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -449,16 +526,29 @@
     "type": "function"
   },
   {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "_competitionId",
-        "type": "uint256"
-      }
-    ],
+    "inputs": [],
     "name": "startCompetition",
     "outputs": [],
     "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "name": "teamCounts",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
     "type": "function"
   },
   {
@@ -544,6 +634,19 @@
     "name": "updateWinningTeamAndTokenURIAndBunnyId",
     "outputs": [],
     "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "viewCurrentCompetitionId",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
     "type": "function"
   },
   {
