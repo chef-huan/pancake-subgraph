@@ -1,0 +1,88 @@
+type Pair @entity {
+    id: ID!
+
+    token0Name: String!
+    token1Name: String!
+    token0Symbol: String!
+    token1Symbol: String!
+
+    block: BigInt!
+    timestamp: BigInt!
+}
+
+type User @entity {
+    id: ID!
+
+    lpStacked: BigInt!
+    lpNotStacked: BigInt!
+    lpTotal: BigInt!
+
+    token0Amount: BigInt!
+    token1Amount: BigInt!
+
+    stackTime: BigInt!
+
+    lastEvent: String
+    lastTx: Bytes
+}
+
+type UserProxy @entity {
+    id: ID!
+
+    user: String!
+}
+
+type Transaction @entity {
+    id: ID!
+
+    block: BigInt!
+    timestamp: BigInt!
+    # This is not the reverse of Mint.transaction; it is only used to
+    # track incomplete mints (similar for burns and swaps)
+    mints: [Mint]!
+    burns: [Burn]!
+}
+
+type Mint @entity {
+    # transaction hash + "-" + index in mints Transaction array
+    id: ID!
+    transaction: Transaction!
+    timestamp: BigInt! # need this to pull recent txns for specific token or pair
+
+    # populated from the primary Transfer event
+    to: Bytes!
+    liquidity: BigInt!
+
+    # populated from the Mint event
+    sender: Bytes
+    amount0: BigInt
+    amount1: BigInt
+    logIndex: BigInt
+}
+
+type Burn @entity {
+    # transaction hash + "-" + index in mints Transaction array
+    id: ID!
+    transaction: Transaction!
+    timestamp: BigInt! # need this to pull recent txns for specific token or pair
+    pair: Pair!
+
+    # populated from the primary Transfer event
+    liquidity: BigInt!
+
+    # populated from the Burn event
+    sender: Bytes
+    amount0: BigInt
+    amount1: BigInt
+    to: Bytes
+    logIndex: BigInt
+    # derived amount based on available prices of tokens
+    amountUSD: BigInt
+
+    # mark uncomplete in BNB case
+    needsComplete: Boolean!
+
+    # optional fee fields, if a Transfer event is fired in _mintFee
+    feeTo: Bytes
+    feeLiquidity: BigInt
+}
