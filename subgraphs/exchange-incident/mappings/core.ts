@@ -1,6 +1,6 @@
 /* eslint-disable prefer-const  */
 import { Burn, Mint, Transfer } from "../generated/templates/Pair/Pair";
-import { getOrCreateTransaction, getOrCreateUser, getUserIfProxy } from "./utils";
+import { getOrCreateTransaction, getOrCreateUser, getUserIfProxy, ZERO_BI } from "./utils";
 import { Address, BigInt } from "@graphprotocol/graph-ts";
 import { Mint as MintEvent } from "../generated/schema";
 
@@ -63,6 +63,9 @@ export function handleTransfer(event: Transfer): void {
 
     userFrom.lastEvent = "Stack";
     userFrom.lastTx = event.transaction.hash;
+    if (userFrom.startStackedTimestamp.equals(ZERO_BI)) {
+      userFrom.startStackedTimestamp = event.block.timestamp;
+    }
 
     userFrom.save();
   } else if (Address.fromString(MASTER_CHEF_V2).equals(event.params.from)) {
@@ -75,6 +78,11 @@ export function handleTransfer(event: Transfer): void {
 
     userTo.lastEvent = "UnStack";
     userTo.lastTx = event.transaction.hash;
+
+    if (userTo.lpStacked.le(ZERO_BI)) {
+      userTo.startStackedTimestamp = ZERO_BI;
+    }
+    userTo.endStackedTimestamp = event.block.timestamp;
 
     userTo.save();
   } else {

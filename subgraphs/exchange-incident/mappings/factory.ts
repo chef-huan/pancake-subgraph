@@ -6,13 +6,13 @@ import { PairCreated } from "../generated/Factory/Factory";
 import { fetchTokenSymbol, fetchTokenName } from "./utils";
 import { Address } from "@graphprotocol/graph-ts";
 
-let WBNB_ADDRESS = "0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c";
-let ANKR_ADDRESS = "0xe85afccdafbe7f2b096f268e31cce3da8da2990a";
+let CAKE_ADDRESS = "0x0e09fabb73bd3ade0a17ecc321fd13a19e81ce82";
+let ARENA_ADDRESS = "0xcffd4d3b517b77be32c76da768634de6c738889b";
 
 export function handlePairCreated(event: PairCreated): void {
   if (
-    Address.fromString(WBNB_ADDRESS).equals(event.params.token0) &&
-    Address.fromString(ANKR_ADDRESS).equals(event.params.token1)
+    Address.fromString(CAKE_ADDRESS).equals(event.params.token0) &&
+    Address.fromString(ARENA_ADDRESS).equals(event.params.token1)
   ) {
     let pair = new Pair(event.params.pair.toHex()) as Pair;
     pair.token0Name = fetchTokenName(event.params.token0);

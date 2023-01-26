@@ -1,5 +1,5 @@
 /* eslint-disable prefer-const */
-import { BigInt, dataSource, store } from "@graphprotocol/graph-ts";
+import { BigInt, dataSource, store, ethereum } from "@graphprotocol/graph-ts";
 import { Transfer } from "../generated/templates/ERC20/ERC20";
 import { ADDRESS_ZERO, BIG_INT_18, convertTokenToDecimal } from "./utils";
 import { Burn, Mint, Pair, Transaction } from "../generated/schema";

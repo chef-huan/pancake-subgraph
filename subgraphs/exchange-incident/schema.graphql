@@ -20,6 +20,9 @@ type User @entity {
     token0Amount: BigInt!
     token1Amount: BigInt!
 
+    startStackedTimestamp: BigInt!
+    endStackedTimestamp: BigInt!
+
     lastEvent: String
     lastTx: Bytes
 }

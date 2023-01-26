@@ -58,6 +58,8 @@ export function getOrCreateUser(userAddress: Address): User {
     user.lpTotal = ZERO_BI;
     user.token0Amount = ZERO_BI;
     user.token1Amount = ZERO_BI;
+    user.startStackedTimestamp = ZERO_BI;
+    user.endStackedTimestamp = ZERO_BI;
     user.save();
   }
 
